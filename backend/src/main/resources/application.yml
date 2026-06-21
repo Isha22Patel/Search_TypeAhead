@@ -1,0 +1,54 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/typeahead
+    username: typeahead
+    password: typeahead
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          batch_size: 1000
+          order_inserts: true
+
+server:
+  port: 8080
+
+# ─────────────── Application Config ───────────────
+
+typeahead:
+  cache:
+    node-count: 3          # Number of virtual cache nodes
+    virtual-replicas: 100  # Virtual replicas per physical node
+    ttl-seconds: 60        # Cache entry TTL
+    max-size: 5000         # Max entries per cache node
+
+  batch:
+    flush-interval-ms: 5000   # Flush every 5 seconds
+    max-buffer-size: 1000     # Force flush at this size
+    jdbc-batch-size: 500      # JDBC batch insert size
+
+  trending:
+    window-minutes: 60        # Sliding window for recent searches
+    cleanup-interval-ms: 300000  # Clean old entries every 5 min
+    top-limit: 10             # How many trending results to return
+    history-weight: 0.3       # Weight for historical count
+    recency-weight: 0.7       # Weight for recent searches
+
+
+logging:
+  level:
+    com.typeahead: INFO
+    org.springframework.scheduling: INFO
